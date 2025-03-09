@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Game of life</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="icon" type="image/png" href="./src/interface/assets/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      font-family: "Quicksand", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+    }
+
+    .app {
+      margin: 0;
+      padding: 1rem 1rem 0 1rem;
+      background-color: #f1f5f9;
+      color: #334155;
+    }
+
+    .game-container {
+      border-radius: 0.25rem;
+      border: 1px solid #64748b;
+      cursor: pointer;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .buttons-container,
+    .infos-container {
+      padding: 1rem 0;
+    }
+
+    .infos-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    #fps {
+      width: 4rem;
+      color: #fff;
+      background-color: #334155;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.25rem;
+      text-align: center;
+      font-weight: 500;
+
+    }
+
+    .buttons-container {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      padding: 1rem 0;
+    }
+
+    label {
+      font-weight: 500;
+    }
+
+    button,
+    select {
+      border-radius: 0.25rem;
+      border: 1px solid #e2e8f0;
+      background-color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      outline: none !important;
+    }
+
+    select {
+      appearance: none;
+      padding: 0.5rem 2rem 0.5rem 0.75rem;
+      margin-left: 0.25rem;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='currentColor' height='12' width='12' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 330 330' xml:space='preserve'><g stroke-width='0'></g><g stroke-linecap='round' stroke-linejoin='round'></g><g><path d='M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z'></path></g></svg>");
+      background-repeat: no-repeat;
+      background-position-x: calc(100% - 10px);
+      background-position-y: 10px;
+    }
+
+    button {
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    select:hover,
+    button:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    button:active {
+      background-color: #e2e8f0;
+      border-color: #94a3b8;
+    }
+
+    #play-pause-button {
+      width: 6rem;
+    }
+
+    .switch-input {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .switch-input input[type=radio]:first-child {
+      margin-left: 0.5rem;
+      border-top-left-radius: 1rem;
+      border-bottom-left-radius: 1rem;
+      border-right-style: none;
+    }
+
+    .switch-input input[type=radio]:last-child {
+      border-top-right-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      border-left-style: none;
+    }
+
+    .switch-input input[type=radio] {
+      appearance: none;
+      margin: 0;
+      width: 2rem;
+      height: 2rem;
+      background-color: white;
+      border-color: #e2e8f0;
+      border-style: solid;
+      cursor: pointer;
+    }
+
+    .switch-input input[type=radio][value="0"]:checked {
+      background-color: #cbd5e1;
+    }
+
+    .switch-input input[type=radio][value="1"]:checked {
+      background-color: #22c55e;
+    }
+  </style>
+</head>
+
+<body class="app">
+  <div class="menu">
+    <div class="buttons-container">
+      <img src="./src/interface/assets/favicon.png" />
+
+      <label for="render-strategy-name">
+        Render
+        <select id="render-strategy-name" name="render-strategy-name">
+          <option value="webgl">WebGL</option>
+          <option value="2d">2d Canvas</option>
+          <option value="html">HTML</option>
+          <option value="text">Text</option>
+        </select>
+      </label>
+
+      <label for="loop-strategy-name">
+        Loop
+        <select id="loop-strategy-name" name="loop-strategy-name">
+          <option value="set-interval">Set Interval</option>
+          <option value="request-animation-frame">Request Animation Frame</option>
+          <option value="set-timeout">Set Timeout</option>
+        </select>
+      </label>
+
+      <label for="speed-level">
+        Speed
+        <select id="speed-level" name="speed-level">
+          <option value="1">Slow</option>
+          <option selected value="2">Normal</option>
+          <option value="3">Fast</option>
+        </select>
+      </label>
+
+      <label class="switch-input">
+        Has infected state
+        <input type="radio" name="supports-infected-state" value="0" />
+        <input type="radio" name="supports-infected-state" value="1" />
+      </label>
+    </div>
+
+    <div class="infos-container">
+      <button id="play-pause-button">Pause</button>
+      <div id="fps">
+        0 fps
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./src/index.ts"></script>
+</body>
+
+</html>
