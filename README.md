@@ -1,5 +1,3 @@
-# Game of life
-
 ## Dev
 
 ```
